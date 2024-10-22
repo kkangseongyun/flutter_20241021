@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
         ),
         body: Column(//여러개를 위아래로 나열하는 위젯..
           children: [
-            
+            MyStatelessWidget(),
+            MyStatefulWidget(),
           ],
         ),
       ),
@@ -34,6 +35,7 @@ class MyStatelessWidget extends StatelessWidget {
     //event callback 함수..
     //stateless 위젯도 얼마든지 변수 선언할 수 있고, 변수 값을 변경할 수 있다.
     //단지 이 변수가 상태가 아니다...
+    //==>변수 값 변경에 의한 화면 갱신이 되지 않는 위젯이다..
     print('stateless, toggleFavorite');
     if(favorited){
       favoriteCount -= 1;
@@ -72,13 +74,21 @@ class MyState extends State<MyStatefulWidget> {
   void toggleFavorite(){
     //event callback 함수..
     print('state, toggleFavorite');
-    if(favorited){
-      favoriteCount -= 1;
-      favorited = false;
-    }else {
-      favoriteCount += 1;
-      favorited = true;
-    }
+    //state 값 변경에 의해 화면이 갱신되려면..
+    //setState() 함수를 호출해야 한다..
+    //setState() 는 build() 함수를 다시 호출하는 역할..
+    //setState() 매개변수의 함수가 호출이 되고 매개변수 함수 호출이 끝나면
+    //build 함수가 자동으로 호출..
+    setState(() {
+      if(favorited){
+        favoriteCount -= 1;
+        favorited = false;
+      }else {
+        favoriteCount += 1;
+        favorited = true;
+      }
+    });
+
   }
   @override
   Widget build(BuildContext context) {
