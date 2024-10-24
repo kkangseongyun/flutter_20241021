@@ -39,6 +39,8 @@ dependencies:
   fluttertoast: ^8.2.4
   smooth_page_indicator: ^1.1.0
   font_awesome_flutter: ^10.7.0
+  http: ^1.2.1
+  dio: ^5.4.1
 
 
 dev_dependencies:
