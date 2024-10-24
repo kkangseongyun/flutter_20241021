@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './asset_widget.dart';
+import './form_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Widget Test'),
         ),
-        body: AssetWidgett(),
+        body: FormWidget(),
       ),
     );
   }
