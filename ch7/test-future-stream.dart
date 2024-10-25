@@ -73,7 +73,21 @@ Future<List<Article>> getServerData(String page) async {
 }
 
 class FutureWidget extends StatelessWidget {
-
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Article>>(
+        future: getServerData("1"),
+        builder: (context, snapshot){
+          if(snapshot.hasData){
+            return getWidget(snapshot.data ?? []);
+          }else if(snapshot.hasError){
+            return Text('${snapshot.error}');
+          }
+          //최초... 빙빙빙..
+          return CircularProgressIndicator();
+        }
+    );
+  }
 
 }
 
@@ -86,7 +100,48 @@ class StreamWidget extends StatefulWidget {
 class StreamState extends State<StreamWidget> {
   List<Article> list = [];
 
+  //여러 stream data를 하나의 stream 으로 통합해서 핸들링 하고자 할때..
+  //stream 이 아닌 일반 데이터를...
+  StreamController<List<Article>> streamController = StreamController();
 
+  //반복적으로 실행시킬 함수..
+  void getData(int i) async {
+    int page = ++i;
+    await getServerData(page.toString())
+      .then((data){
+       streamController.add(data);
+    });
+  }
+
+  periodicStream() async {
+    Duration interval = Duration(seconds: 5);
+    Stream stream = Stream.periodic(interval, getData);
+    stream = stream.take(5);
+    stream.listen((event){
+      print('서버요청..');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    periodicStream();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: streamController.stream,
+        builder: (context, snapshot){
+          if(snapshot.hasData){
+            list.addAll(snapshot.data ?? []);
+            return getWidget(list);
+          }else if(snapshot.hasError){
+            return Text('${snapshot.error}');
+          }
+          return CircularProgressIndicator();
+        }
+    );
+  }
 }
 
 
